@@ -1,18 +1,23 @@
 package com.share.bill.services;
 
-import com.share.bill.Bill;
-import com.share.bill.Group;
-import com.share.bill.User;
 import com.share.bill.dto.UserRequestDto;
+import com.share.bill.entities.Bill;
+import com.share.bill.entities.Group;
+
+import com.share.bill.entities.User;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+;
+
 /**
  * Created by prateek on 28/9/17.
  */
+@Service
 public class BillShareServiceImpl implements BillShareService{
 
     List<User> userList = new ArrayList<>();
