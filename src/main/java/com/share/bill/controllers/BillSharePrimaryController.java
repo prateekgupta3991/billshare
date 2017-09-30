@@ -1,30 +1,39 @@
 package com.share.bill.controllers;
 
+import com.share.bill.User;
+import com.share.bill.dto.UserRequestDto;
+import com.share.bill.services.BillShareService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.share.bill.dto.UserRequestDto;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+
+import java.util.List;
 
 @Controller
 @RequestMapping(value="/v1")
 public class BillSharePrimaryController extends AbstractController {
-	
+
+	@Autowired
+    private BillShareService billShareServiceImpl;
+
 	@RequestMapping(value="/user/new", method=RequestMethod.POST)
-	public ResponseEntity<UserRequestDto> createNewUser(@RequestBody UserRequestDto json ) {
-		System.out.println(json+" received");
-		return new ResponseEntity<UserRequestDto>(json, HttpStatus.OK);
+	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
+
+	    User usr = billShareServiceImpl.addNewUser(json);
+		return new ResponseEntity<User>(usr, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value="/user", method=RequestMethod.GET)
-	public ResponseEntity<?> getUser() {
-		System.out.println("Hey man received");
-		return null;
+	public ResponseEntity<List<User>> getUser() {
+
+        List<User> userList = billShareServiceImpl.getAllUsers();
+		return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
 	}
 
 	@Override

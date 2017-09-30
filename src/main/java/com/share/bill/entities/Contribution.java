@@ -1,4 +1,4 @@
-package com.share.bill;
+package com.share.bill.entities;
 
 /**
  * Created by prateekgupta on 09/09/17.

@@ -1,4 +1,8 @@
-package com.share.bill;
+package com.share.bill.services;
+
+import com.share.bill.entities.Contribution;
+import com.share.bill.entities.Group;
+import com.share.bill.entities.User;
 
 import java.util.Map;
 

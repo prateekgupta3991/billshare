@@ -1,4 +1,4 @@
-package com.share.bill;
+package com.share.bill.entities;
 
 import java.util.Map;
 
