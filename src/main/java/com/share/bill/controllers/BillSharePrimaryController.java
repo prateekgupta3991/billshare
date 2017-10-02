@@ -1,6 +1,8 @@
 package com.share.bill.controllers;
 
+import com.share.bill.dto.GroupRequestDto;
 import com.share.bill.dto.UserRequestDto;
+import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
 import com.share.bill.services.BillShareService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +47,19 @@ public class BillSharePrimaryController extends AbstractController {
 		ModelAndView model = new ModelAndView("HelloWorldPage");
 		model.addObject("msg", "hello world");
 		return model;
+	}
+
+	@RequestMapping(value="/group/new", method=RequestMethod.POST)
+	public ResponseEntity<Group> createNewGroup(@RequestBody GroupRequestDto json ) {
+
+		Group group = billShareServiceImpl.addNewGroup(json);
+		return new ResponseEntity<>(group, HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/group", method=RequestMethod.GET)
+	public ResponseEntity<List<Group>> getGroups() {
+
+		List<Group> groupList = billShareServiceImpl.getAllGroups();
+		return new ResponseEntity<>(groupList, HttpStatus.OK);
 	}
 }

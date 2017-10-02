@@ -1,5 +1,6 @@
 package com.share.bill.services;
 
+import com.share.bill.dto.GroupRequestDto;
 import com.share.bill.dto.UserRequestDto;
 import com.share.bill.entities.Bill;
 import com.share.bill.entities.Group;
@@ -21,8 +22,8 @@ import java.util.Map;
 public class BillShareServiceImpl implements BillShareService{
 
     List<User> userList = new ArrayList<>();
-    List<User> groupList = new ArrayList<>();
-    List<User> billList = new ArrayList<>();
+    List<Group> groupList = new ArrayList<>();
+    List<Bill> billList = new ArrayList<>();
 
     Map<User, List<Group>> userGroupListMap = new HashMap<>();
     Map<Group, List<User>> groupUserListMap = new HashMap<>();
@@ -39,5 +40,17 @@ public class BillShareServiceImpl implements BillShareService{
     @Override
     public List<User> getAllUsers() {
         return userList;
+    }
+
+    @Override
+    public Group addNewGroup(GroupRequestDto groupRequestDto) {
+        Group group = new Group(groupRequestDto.getName());
+        groupList.add(group);
+        return group;
+    }
+
+    @Override
+    public List<Group> getAllGroups() {
+        return groupList;
     }
 }
