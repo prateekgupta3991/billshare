@@ -28,6 +28,13 @@ public class BillSharePrimaryController extends AbstractController {
 		this.billShareServiceImpl = billShareServiceImpl;
 	}
 
+	@Override
+	protected ModelAndView handleRequestInternal(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
+		ModelAndView model = new ModelAndView("HelloWorldPage");
+		model.addObject("msg", "hello world");
+		return model;
+	}
+
 	@RequestMapping(value="/user/new", method=RequestMethod.POST)
 	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
 
@@ -40,13 +47,6 @@ public class BillSharePrimaryController extends AbstractController {
 
         List<User> userList = billShareServiceImpl.getAllUsers();
 		return new ResponseEntity<>(userList, HttpStatus.OK);
-	}
-
-	@Override
-	protected ModelAndView handleRequestInternal(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
-		ModelAndView model = new ModelAndView("HelloWorldPage");
-		model.addObject("msg", "hello world");
-		return model;
 	}
 
 	@RequestMapping(value="/group/new", method=RequestMethod.POST)
