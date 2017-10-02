@@ -1,4 +1,10 @@
-package com.share.bill;
+package com.share.bill.services;
+
+import com.share.bill.entities.Bill;
+import com.share.bill.entities.Contribution;
+import com.share.bill.entities.Group;
+import com.share.bill.entities.User;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +13,8 @@ import java.util.Map;
 /**
  * Created by prateekgupta on 09/09/17.
  */
+
+@Component
 public class ModestSplitwiseImpl implements ModestSplitwise {
 
     private Map<Group, Bill> groupBillMap;
