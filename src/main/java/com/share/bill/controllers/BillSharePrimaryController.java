@@ -22,6 +22,10 @@ public class BillSharePrimaryController extends AbstractController {
 	@Autowired
     private BillShareService billShareServiceImpl;
 
+	public void setBillShareServiceImpl(BillShareService billShareServiceImpl) {
+		this.billShareServiceImpl = billShareServiceImpl;
+	}
+
 	@RequestMapping(value="/user/new", method=RequestMethod.POST)
 	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
 
