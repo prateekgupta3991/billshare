@@ -5,6 +5,8 @@ import com.share.bill.dto.UserRequestDto;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
 import com.share.bill.services.BillShareService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class BillSharePrimaryController extends AbstractController {
 	}
 
 	@Override
-	protected ModelAndView handleRequestInternal(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse) throws Exception {
+	protected ModelAndView handleRequestInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 		ModelAndView model = new ModelAndView("HelloWorldPage");
 		model.addObject("msg", "hello world");
 		return model;
@@ -38,14 +40,14 @@ public class BillSharePrimaryController extends AbstractController {
 	@RequestMapping(value="/user/new", method=RequestMethod.POST)
 	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
 
-	    User usr = billShareServiceImpl.addNewUser(json);
+		User usr = billShareServiceImpl.addNewUser(json);
 		return new ResponseEntity<>(usr, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/user", method=RequestMethod.GET)
 	public ResponseEntity<List<User>> getUser() {
 
-        List<User> userList = billShareServiceImpl.getAllUsers();
+		List<User> userList = billShareServiceImpl.getAllUsers();
 		return new ResponseEntity<>(userList, HttpStatus.OK);
 	}
 
@@ -61,5 +63,12 @@ public class BillSharePrimaryController extends AbstractController {
 
 		List<Group> groupList = billShareServiceImpl.getAllGroups();
 		return new ResponseEntity<>(groupList, HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/group/addUsers", method=RequestMethod.PUT)
+	public ResponseEntity<Group> addUsersToGroup(@RequestBody GroupRequestDto groupRequestDto) {
+
+		billShareServiceImpl.addUserToGroup(groupRequestDto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

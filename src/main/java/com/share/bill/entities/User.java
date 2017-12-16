@@ -11,19 +11,23 @@ import java.util.Map;
 public class User {
 
     private String name;
+    private String email;
     private Double totalAmount;
     private List<Group> groupsInvolved;
     private Map<Group, Double> groupWiseAmount;
 
-    public User(String nam) {
+    public User(String nam, String email) {
         super();
         this.name = nam;
+        this.email = email;
         this.groupsInvolved = new ArrayList<>();
         this.groupWiseAmount = new HashMap<>();
     }
 
-    public User(String name, Double totalAmount, List<Group> groupsInvolved, Map<Group, Double> groupWiseAmount) {
+    public User(String name, String email, Double totalAmount, List<Group> groupsInvolved, Map<Group, Double>
+        groupWiseAmount) {
         this.name = name;
+        this.email = email;
         this.totalAmount = totalAmount;
         this.groupsInvolved = groupsInvolved;
         this.groupWiseAmount = groupWiseAmount;
@@ -59,5 +63,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

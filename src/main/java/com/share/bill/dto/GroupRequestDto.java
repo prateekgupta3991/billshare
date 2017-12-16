@@ -1,16 +1,16 @@
 package com.share.bill.dto;
 
-import com.share.bill.entities.User;
-
-import java.io.Serializable;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class GroupRequestDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+
+	private Long id;
 	private String name;
-	private List<User> userList ;
-	
+	private List<UserRequestDto> userRequestDtoList;
+
 	public String getName() {
 		return name;
 	}
@@ -19,19 +19,28 @@ public class GroupRequestDto implements Serializable{
 		this.name = name;
 	}
 
-	public List<User> getUserList() {
-		return userList;
+	public List<UserRequestDto> getUserRequestDtoList() {
+		return userRequestDtoList;
 	}
 
-	public void setUserList(List<User> userList) {
-		this.userList = userList;
+	public void setUserRequestDtoList(List<UserRequestDto> userRequestDtoList) {
+		this.userRequestDtoList = userRequestDtoList;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Override
 	public String toString() {
 		return "GroupRequestDto{" +
-				"name='" + name + '\'' +
-				", userList=" + userList +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", userRequestDtoList=" + userRequestDtoList +
 				'}';
 	}
 }

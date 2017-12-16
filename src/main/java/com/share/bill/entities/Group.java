@@ -8,21 +8,26 @@ import java.util.List;
  */
 public class Group {
 
+    private Long id;
     private String name;
     private List<User> users;
     private List<Bill> bills;
+    private List<User> admins;
 
     public Group(String nam) {
         super();
         this.name = nam;
         this.users = new ArrayList<>();
         this.bills = new ArrayList<>();
+        this.admins = new ArrayList<>();
     }
 
-    public Group(String name, List<User> users, List<Bill> bills) {
-        this.name = name;
-        this.users = users;
-        this.bills = bills;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public List<User> getUsers() {
@@ -47,5 +52,24 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<User> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<User> admins) {
+        this.admins = admins;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", users=" + users +
+            ", bills=" + bills +
+            ", admins=" + admins +
+            '}';
     }
 }

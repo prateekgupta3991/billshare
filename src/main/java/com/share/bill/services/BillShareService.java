@@ -22,4 +22,5 @@ public interface BillShareService {
 
     List<Group> getAllGroups();
 
+    void addUserToGroup(GroupRequestDto groupRequestDto);
 }

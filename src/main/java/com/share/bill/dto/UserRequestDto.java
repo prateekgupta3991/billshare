@@ -1,13 +1,14 @@
 package com.share.bill.dto;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class UserRequestDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+
 	private String name;
 	private String email;
-	
+
 	public String getName() {
 		return name;
 	}
