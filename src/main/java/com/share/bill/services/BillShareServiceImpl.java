@@ -44,6 +44,9 @@ public class BillShareServiceImpl implements BillShareService{
 
     @Override
     public Group addNewGroup(GroupRequestDto groupRequestDto) throws CustomerNotFoundException {
+        if(groupRequestDto.getUserRequestDtoList() == null || groupRequestDto.getUserRequestDtoList().isEmpty()) {
+            throw new GroupWithoutAdminException("User list is empty. Group without admin not possible!!!");
+        }
         Group group = new Group(groupRequestDto.getName());
         groupList.add(group);
 
@@ -57,6 +60,7 @@ public class BillShareServiceImpl implements BillShareService{
         group.setId(identityCtr);
         identityCtr++;
         groupIdToGroupMap.put(group.getId(), group);
+        groupUserListMap.put(group, userList);
 
         return group;
     }
