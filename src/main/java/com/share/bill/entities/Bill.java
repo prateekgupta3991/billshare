@@ -21,8 +21,8 @@ public class Bill {
     @Column(name = "amount")
     private Double billAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Group billGroup;
+    @Column(name = "group_id")
+    private Long groupId;
 
     @Transient
     private Map<User, Contribution> userContributions;
@@ -34,10 +34,10 @@ public class Bill {
     public Bill() {
     }
 
-    public Bill(String name, Double billAmount, Group billGroup, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
+    public Bill(String name, Double billAmount, Long groupId, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
         this.name = name;
         this.billAmount = billAmount;
-        this.billGroup = billGroup;
+        this.groupId = groupId;
         this.userContributions = userContributions;
         this.userOwed = userOwed;
     }
@@ -58,12 +58,12 @@ public class Bill {
         this.billAmount = billAmount;
     }
 
-    public Group getBillGroup() {
-        return billGroup;
+    public Long getGroupId() {
+        return groupId;
     }
 
-    public void setBillGroup(Group billGroup) {
-        this.billGroup = billGroup;
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public Map<User, Contribution> getUserContributions() {
@@ -96,7 +96,7 @@ public class Bill {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", billAmount=" + billAmount +
-                ", billGroup=" + billGroup +
+                ", groupId=" + groupId +
                 ", userContributions=" + userContributions +
                 ", userOwed=" + userOwed +
                 '}';

@@ -27,7 +27,8 @@ public class User {
     @Transient
     private Double totalAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Group.class)
+    //@ManyToOne(fetch = FetchType.LAZY, targetEntity = Group.class)
+    @Transient
     private List<Group> groupsInvolved;
 
     @Transient

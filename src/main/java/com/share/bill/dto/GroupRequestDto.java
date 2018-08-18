@@ -9,7 +9,7 @@ public class GroupRequestDto implements Serializable{
 
 	private Long id;
 	private String name;
-	private List<UserRequestDto> userRequestDtoList;
+	private List<String> userEmails;
 
 	public String getName() {
 		return name;
@@ -19,12 +19,12 @@ public class GroupRequestDto implements Serializable{
 		this.name = name;
 	}
 
-	public List<UserRequestDto> getUserRequestDtoList() {
-		return userRequestDtoList;
+	public List<String> getUserEmails() {
+		return userEmails;
 	}
 
-	public void setUserRequestDtoList(List<UserRequestDto> userRequestDtoList) {
-		this.userRequestDtoList = userRequestDtoList;
+	public void setUserEmails(List<String> userEmails) {
+		this.userEmails = userEmails;
 	}
 
 	public Long getId() {
@@ -40,7 +40,7 @@ public class GroupRequestDto implements Serializable{
 		return "GroupRequestDto{" +
 				"id=" + id +
 				", name='" + name + '\'' +
-				", userRequestDtoList=" + userRequestDtoList +
+				", userEmails=" + userEmails +
 				'}';
 	}
 }

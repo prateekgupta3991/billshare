@@ -17,19 +17,6 @@ import org.springframework.stereotype.*;
 @Service
 public class BillShareServiceImpl implements BillShareService{
 
-    private List<User> userList = new ArrayList<>();
-    private List<Group> groupList = new ArrayList<>();
-    private List<Bill> billList = new ArrayList<>();
-
-    private Map<String, User> emailToUserMap = new HashMap<>();
-    private Map<Long, Group> groupIdToGroupMap = new HashMap<>();
-
-    private Map<User, List<Group>> userGroupListMap = new HashMap<>();
-    private Map<Group, List<User>> groupUserListMap = new HashMap<>();
-    private Map<Group, Bill> groupBillMap = new HashMap<>();
-
-    private Long identityCtr = 1L;
-
     @Autowired
     private UserDao userDao;
 
@@ -42,14 +29,12 @@ public class BillShareServiceImpl implements BillShareService{
     @Override
     public User addNewUser(UserRequestDto userRequestDto) {
 
-//        if(emailToUserMap.containsKey(userRequestDto.getEmail().toLowerCase())) {
-//            throw new CustomerAlreadyExistsException("Customer with email id " + userRequestDto + " already exists");
-//        }
+        User existingUser = userDao.findByEmail(userRequestDto.getEmail());
+        if(existingUser != null) {
+            throw new CustomerAlreadyExistsException("Customer with email id " + userRequestDto + " already exists");
+        }
         User user = new User(userRequestDto.getName(), userRequestDto.getEmail());
-        userDao.findAll();
-
-//        emailToUserMap.put(userRequestDto.getEmail().toLowerCase(), user);
-//        userList.add(user);
+        userDao.persist(user);
         return user;
     }
 
@@ -57,74 +42,44 @@ public class BillShareServiceImpl implements BillShareService{
     public List<User> getAllUsers() {
         List<User> users = userDao.findAll();
         return users;
-//        return userList;
     }
 
     @Override
     public Group addNewGroup(GroupRequestDto groupRequestDto) throws CustomerNotFoundException {
-        if(groupRequestDto.getUserRequestDtoList() == null || groupRequestDto.getUserRequestDtoList().isEmpty()) {
+        if(groupRequestDto.getUserEmails() == null || groupRequestDto.getUserEmails().isEmpty()) {
             throw new GroupWithoutAdminException("User list is empty. Group without admin not possible!!!");
         }
         Group group = new Group(groupRequestDto.getName());
-        groupList.add(group);
-
-        // considers 0th element of the userlist to be admin by default
-        List<User> userList = convertUserDtoToUser(groupRequestDto.getUserRequestDtoList());
-        verifyUserList(userList);
-        List<User> admin = new ArrayList<>();
-        admin.add(userList.get(0));
-        group.setAdmins(admin);
-        group.setUsers(userList);
-        group.setId(identityCtr);
-        identityCtr++;
-        groupIdToGroupMap.put(group.getId(), group);
-        groupUserListMap.put(group, userList);
-
+        groupDao.persist(group);
         return group;
     }
 
-    private List<User> convertUserDtoToUser(List<UserRequestDto> userList) {
-
-        List<User> userListFromDto = new ArrayList<>();
-        for(UserRequestDto userRequestDto : userList) {
-            User usr = emailToUserMap.containsKey(userRequestDto.getEmail().toLowerCase()) == true ? emailToUserMap
-                .get(userRequestDto.getEmail().toLowerCase()) : new User(userRequestDto.getName(), userRequestDto.getEmail());
-            userListFromDto.add(usr);
-        }
-        return userListFromDto;
+    @Override
+    public List<Group> getAllGroups() throws CustomerNotFoundException {
+        return groupDao.findAll();
     }
 
-    private void verifyUserList(List<User> userList) {
-        List<User> nonExistentUsers = new ArrayList<>();
-        for(User usr : userList) {
-            if(!emailToUserMap.containsKey(usr.getEmail().toLowerCase())) {
-                nonExistentUsers.add(usr);
-            }
-        }
-        if(!nonExistentUsers.isEmpty()) {
-            throw new CustomerNotFoundException("Customer does not exists " + nonExistentUsers);
+    private void verifyUserList(List<String> emails) {
+
+        List<User> userList = userDao.findAllByEmail(emails);
+        if (userList.size() == emails.size()) {
+            throw new CustomerNotFoundException("Some customers does not exists");
         }
     }
 
     @Override
-    public List<Group> getAllGroups() {
-        return groupList;
+    public void addUserToGroup(GroupRequestDto groupRequestDto) throws GroupNotFoundException, CustomerNotFoundException {
+
+        verifyGroupExists(groupRequestDto.getId());
+        verifyUserList(groupRequestDto.getUserEmails());
+        // add users to database
     }
 
-    @Override
-    public void addUserToGroup(GroupRequestDto groupRequestDto) throws GroupNotFoundException,
-        CustomerNotFoundException {
+    private void verifyGroupExists(Long id) {
 
-        verifyGroupExists(groupRequestDto);
-        List<User> userList = convertUserDtoToUser(groupRequestDto.getUserRequestDtoList());
-        verifyUserList(userList);
-        List<User> users = groupUserListMap.get(groupIdToGroupMap.get(groupRequestDto.getId()));
-        users.addAll(userList);
-    }
-
-    private void verifyGroupExists(GroupRequestDto groupRequestDto) {
-        if(!groupIdToGroupMap.containsKey(groupRequestDto.getId())) {
-            throw new GroupNotFoundException("Group " + groupRequestDto.getName() + " does not exists");
+        Group grp = groupDao.findById(id);
+        if(grp == null) {
+            throw new GroupNotFoundException("Group with id " + id + " does not exists");
         }
     }
 }

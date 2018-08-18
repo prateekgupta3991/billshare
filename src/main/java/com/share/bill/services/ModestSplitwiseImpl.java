@@ -1,9 +1,14 @@
 package com.share.bill.services;
 
+import com.share.bill.dao.BillDao;
+import com.share.bill.dao.GroupDao;
+import com.share.bill.dao.UserDao;
+import com.share.bill.dto.BillRequestDto;
 import com.share.bill.entities.Bill;
 import com.share.bill.entities.Contribution;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -17,33 +22,34 @@ import java.util.Map;
 @Component
 public class ModestSplitwiseImpl implements ModestSplitwise {
 
-    private Map<Group, Bill> groupBillMap;
+    @Autowired
+    private UserDao userDao;
 
-    public ModestSplitwiseImpl() {
-        super();
-        groupBillMap = new HashMap<>();
-    }
+    @Autowired
+    private BillDao billDao;
 
-    public ModestSplitwiseImpl(Map<Group, Bill> listOfBills) {
-        this.groupBillMap = listOfBills;
-    }
+    @Autowired
+    private GroupDao groupDao;
 
     @Override
-    public void addBill(String billName, Double amt, Group grp, Map<User, Contribution> userContriPaid, Map<User, Contribution> userContriOwe) {
+    public void addBill(BillRequestDto billRequestDto) {
 
-        validations(amt, grp, userContriPaid, userContriOwe);
-        Bill bill = new Bill(billName, amt, grp, userContriPaid, userContriOwe);
-        groupBillMap.put(grp, bill);
-        addBillToGroup(grp, bill);
-        updateUsersBalanceInGroup(grp, bill);
+        validations(billRequestDto);
+        Bill bill = new Bill(billRequestDto.getBillName(), billRequestDto.getAmount(), billRequestDto.getGrpId(),
+                billRequestDto.getUserContriPaid(), billRequestDto.getUserContriOwe());
+        billDao.persist(bill);
+        if (billRequestDto.getGrpId() != null) {
+            updateUsersBalanceInGroup(billRequestDto.getGrpId(), bill);
+        }
     }
 
-    private void validations(Double amt, Group grp, Map<User, Contribution> userContriPaid, Map<User, Contribution> userContriOwe) {
+    private void validations(BillRequestDto billRequestDto) {
 
         Double paidAmt = 0.0, owedAmt = 0.0, paidPer = 0.0, owedPer = 0.0;
-        for(Map.Entry<User, Contribution> contributionEntry : userContriPaid.entrySet()) {
+        for(Map.Entry<User, Contribution> contributionEntry : billRequestDto.getUserContriPaid().entrySet()) {
             int cnt = 0;
-            for(User usr : grp.getUsers()) {
+            Group processGroup = groupDao.findById(billRequestDto.getGrpId());
+            for(User usr : processGroup.getUsers()) {
                 if(usr.equals(contributionEntry.getKey())) {
                     cnt++;
                     continue;
@@ -54,6 +60,7 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
                 System.exit(0);
             }
 
+            Map<User, Contribution> userContriOwe = billRequestDto.getUserContriOwe();
             if(contributionEntry.getValue().getShareAmount() == null && contributionEntry.getValue().getSharePercentage() == null
                     || userContriOwe.get(contributionEntry.getKey()).getShareAmount() == null && userContriOwe.get(contributionEntry.getKey()).getSharePercentage() == null) {
                 System.out.println("No share data supplied");
@@ -71,7 +78,8 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
                 }
             }
         }
-        if(paidAmt.equals(amt) || paidPer.equals(new Double(100.0)) && owedAmt.equals(amt) || owedPer.equals(new Double(100.0))) {
+        if(paidAmt.equals(billRequestDto.getAmount()) || paidPer.equals(new Double(100.0))
+                && owedAmt.equals(billRequestDto.getAmount()) || owedPer.equals(new Double(100.0))) {
 
         } else {
             System.out.println("Incorrect paid or owed data supplied");
@@ -79,7 +87,9 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
         }
     }
 
-    private void updateUsersBalanceInGroup(Group grp, Bill bill) {
+    private void updateUsersBalanceInGroup(Long grpId, Bill bill) {
+
+        Group grp = groupDao.findById(grpId);
         List<User> grpUsers = grp.getUsers();
         for(User userItr : grpUsers) {
             Contribution currentUserContriPaid = bill.getUserContributions().get(userItr);
@@ -124,10 +134,6 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
             share = contri.getSharePercentage() * billAmount / 100.0;
         }
         return share;
-    }
-
-    private void addBillToGroup(Group grp, Bill bill) {
-        grp.getBills().add(bill);
     }
 
     @Override

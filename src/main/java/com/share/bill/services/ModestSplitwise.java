@@ -1,5 +1,6 @@
 package com.share.bill.services;
 
+import com.share.bill.dto.BillRequestDto;
 import com.share.bill.entities.Contribution;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Component
 public interface ModestSplitwise {
 
-    void addBill(String billName, Double amt, Group grp, Map<User, Contribution> userContriPaid, Map<User, Contribution> userContriOwe);
+    void addBill(BillRequestDto billRequestDto);
 
     void getGroupWiseUserBalance(User usr);
 
