@@ -1,20 +1,37 @@
 package com.share.bill.entities;
 
+import javax.persistence.*;
 import java.util.Map;
 
 /**
  * Created by prateekgupta on 09/09/17.
  */
+@Table(name = "bill")
+@Entity
 public class Bill {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "amount")
     private Double billAmount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Group billGroup;
+
+    @Transient
     private Map<User, Contribution> userContributions;
+
+    @Transient
     private Map<User, Contribution> userOwed;
 
+
     public Bill() {
-        super();
     }
 
     public Bill(String name, Double billAmount, Group billGroup, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
@@ -23,6 +40,14 @@ public class Bill {
         this.billGroup = billGroup;
         this.userContributions = userContributions;
         this.userOwed = userOwed;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getBillAmount() {
@@ -63,5 +88,17 @@ public class Bill {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", billAmount=" + billAmount +
+                ", billGroup=" + billGroup +
+                ", userContributions=" + userContributions +
+                ", userOwed=" + userOwed +
+                '}';
     }
 }

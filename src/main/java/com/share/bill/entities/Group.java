@@ -1,17 +1,31 @@
 package com.share.bill.entities;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by prateekgupta on 09/09/17.
  */
+@Table(name = "group")
+@Entity
 public class Group {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "id")
     private List<User> users;
+
+    @OneToMany(mappedBy = "id")
     private List<Bill> bills;
+
+    @OneToMany(mappedBy = "id")
     private List<User> admins;
 
     public Group(String nam) {

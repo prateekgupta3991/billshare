@@ -1,5 +1,6 @@
 package com.share.bill.entities;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +9,28 @@ import java.util.Map;
 /**
  * Created by prateekgupta on 09/09/17.
  */
+@Table(name = "user")
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Transient
     private Double totalAmount;
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Group.class)
     private List<Group> groupsInvolved;
+
+    @Transient
     private Map<Group, Double> groupWiseAmount;
 
     public User(String nam, String email) {
@@ -31,6 +48,14 @@ public class User {
         this.totalAmount = totalAmount;
         this.groupsInvolved = groupsInvolved;
         this.groupWiseAmount = groupWiseAmount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getTotalAmount() {
@@ -71,5 +96,17 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", groupsInvolved=" + groupsInvolved +
+                ", groupWiseAmount=" + groupWiseAmount +
+                '}';
     }
 }

@@ -1,9 +1,14 @@
 package com.share.bill.services;
 
+import com.share.bill.dao.BillDao;
+import com.share.bill.dao.GroupDao;
+import com.share.bill.dao.UserDao;
 import com.share.bill.dto.*;
 import com.share.bill.entities.*;
 import com.share.bill.exceptions.*;
 import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 /**
@@ -25,21 +30,34 @@ public class BillShareServiceImpl implements BillShareService{
 
     private Long identityCtr = 1L;
 
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private BillDao billDao;
+
+    @Autowired
+    private GroupDao groupDao;
+
     @Override
     public User addNewUser(UserRequestDto userRequestDto) {
 
-        if(emailToUserMap.containsKey(userRequestDto.getEmail().toLowerCase())) {
-            throw new CustomerAlreadyExistsException("Customer with email id " + userRequestDto + " already exists");
-        }
+//        if(emailToUserMap.containsKey(userRequestDto.getEmail().toLowerCase())) {
+//            throw new CustomerAlreadyExistsException("Customer with email id " + userRequestDto + " already exists");
+//        }
         User user = new User(userRequestDto.getName(), userRequestDto.getEmail());
-        emailToUserMap.put(userRequestDto.getEmail().toLowerCase(), user);
-        userList.add(user);
+        userDao.findAll();
+
+//        emailToUserMap.put(userRequestDto.getEmail().toLowerCase(), user);
+//        userList.add(user);
         return user;
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userList;
+        List<User> users = userDao.findAll();
+        return users;
+//        return userList;
     }
 
     @Override

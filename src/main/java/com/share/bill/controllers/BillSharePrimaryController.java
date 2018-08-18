@@ -37,7 +37,7 @@ public class BillSharePrimaryController extends AbstractController {
 		return model;
 	}
 
-	@RequestMapping(value="/user/new", method=RequestMethod.POST)
+	@RequestMapping(value="/user", method=RequestMethod.POST)
 	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
 
 		User usr = billShareServiceImpl.addNewUser(json);
@@ -51,7 +51,7 @@ public class BillSharePrimaryController extends AbstractController {
 		return new ResponseEntity<>(userList, HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/group/new", method=RequestMethod.POST)
+	@RequestMapping(value="/group", method=RequestMethod.POST)
 	public ResponseEntity<Group> createNewGroup(@RequestBody GroupRequestDto json ) {
 
 		Group group = billShareServiceImpl.addNewGroup(json);
