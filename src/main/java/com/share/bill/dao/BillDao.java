@@ -1,6 +1,7 @@
 package com.share.bill.dao;
 
 import com.share.bill.entities.Bill;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,21 +14,25 @@ public class BillDao implements DaoInterface<Bill, Long> {
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
+    public Session getSession() {
+        return hibernateTemplate.getSessionFactory().openSession();
+    }
+
     public void persist(Bill entity) {
-        hibernateTemplate.save(entity);
+        getSession().save(entity);
     }
 
     public void update(Bill entity) {
-        hibernateTemplate.update(entity);
+        getSession().update(entity);
     }
 
     public Bill findById(Long id) {
-        Bill book = hibernateTemplate.get(Bill.class, id);
+        Bill book = (Bill) getSession().get(Bill.class, id);
         return book;
     }
 
     public void delete(Bill entity) {
-        hibernateTemplate.delete(entity);
+        getSession().delete(entity);
     }
 
     @SuppressWarnings("unchecked")

@@ -3,13 +3,18 @@ package com.share.bill.services;
 import com.share.bill.dao.BillDao;
 import com.share.bill.dao.GroupDao;
 import com.share.bill.dao.UserDao;
-import com.share.bill.dto.*;
-import com.share.bill.entities.*;
-import com.share.bill.exceptions.*;
-import java.util.*;
-
+import com.share.bill.dto.GroupRequestDto;
+import com.share.bill.dto.UserRequestDto;
+import com.share.bill.entities.Group;
+import com.share.bill.entities.User;
+import com.share.bill.exceptions.CustomerAlreadyExistsException;
+import com.share.bill.exceptions.CustomerNotFoundException;
+import com.share.bill.exceptions.GroupNotFoundException;
+import com.share.bill.exceptions.GroupWithoutAdminException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by prateek on 28/9/17.
@@ -33,7 +38,7 @@ public class BillShareServiceImpl implements BillShareService{
         if(existingUser != null) {
             throw new CustomerAlreadyExistsException("Customer with email id " + userRequestDto + " already exists");
         }
-        User user = new User(userRequestDto.getName(), userRequestDto.getEmail());
+        User user = new User(userRequestDto.getName(), userRequestDto.getEmail(), userRequestDto.getContact());
         userDao.persist(user);
         return user;
     }
@@ -42,6 +47,12 @@ public class BillShareServiceImpl implements BillShareService{
     public List<User> getAllUsers() {
         List<User> users = userDao.findAll();
         return users;
+    }
+
+    @Override
+    public User getUser(Long userId) {
+        User user = userDao.findById(userId);
+        return user;
     }
 
     @Override

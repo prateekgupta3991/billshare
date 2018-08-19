@@ -24,6 +24,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "contact")
+    private String contact;
+
     @Transient
     private Double totalAmount;
 
@@ -34,18 +37,23 @@ public class User {
     @Transient
     private Map<Group, Double> groupWiseAmount;
 
-    public User(String nam, String email) {
+    public User() {
+    }
+
+    public User(String nam, String email, String contact) {
         super();
         this.name = nam;
         this.email = email;
+        this.contact = contact;
         this.groupsInvolved = new ArrayList<>();
         this.groupWiseAmount = new HashMap<>();
     }
 
-    public User(String name, String email, Double totalAmount, List<Group> groupsInvolved, Map<Group, Double>
+    public User(String name, String email, String contact, Double totalAmount, List<Group> groupsInvolved, Map<Group, Double>
         groupWiseAmount) {
         this.name = name;
         this.email = email;
+        this.contact = contact;
         this.totalAmount = totalAmount;
         this.groupsInvolved = groupsInvolved;
         this.groupWiseAmount = groupWiseAmount;
@@ -57,6 +65,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public Double getTotalAmount() {
@@ -105,6 +121,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", contact='" + contact + '\'' +
                 ", totalAmount=" + totalAmount +
                 ", groupsInvolved=" + groupsInvolved +
                 ", groupWiseAmount=" + groupWiseAmount +

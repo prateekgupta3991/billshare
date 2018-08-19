@@ -8,6 +8,7 @@ public class UserRequestDto implements Serializable{
 
 	private String name;
 	private String email;
+	private String contact;
 
 	public String getName() {
 		return name;
@@ -25,8 +26,20 @@ public class UserRequestDto implements Serializable{
 		this.email = email;
 	}
 
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+
 	@Override
 	public String toString() {
-		return "UserRequestDto [name=" + name + ", email=" + email + "]";
+		return "UserRequestDto{" +
+				"name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", contact='" + contact + '\'' +
+				'}';
 	}
 }

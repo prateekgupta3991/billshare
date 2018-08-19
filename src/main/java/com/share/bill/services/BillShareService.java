@@ -18,6 +18,8 @@ public interface BillShareService {
 
     List<User> getAllUsers();
 
+    User getUser(Long userId);
+
     Group addNewGroup(GroupRequestDto groupRequestDto);
 
     List<Group> getAllGroups();
