@@ -1,6 +1,5 @@
 package com.share.bill.dao;
 
-import com.share.bill.config.RepositoryConfig;
 import com.share.bill.entities.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,33 +21,41 @@ public class UserDao implements DaoInterface<User, Long> {
         return hibernateTemplate.getSessionFactory();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void persist(User entity) {
-        getSession().openSession().save(entity);
-        getSession().close();
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        session.save(entity);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public void update(User entity) {
-        getSession().openSession().saveOrUpdate(entity);
-        getSession().close();
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(entity);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public User findById(Long id) {
-        User book = (User) getSession().openSession().get(User.class, id);
-        getSession().close();
+        Session session = getSession().openSession();
+        User book = (User) session.get(User.class, id);
+        session.close();
         return book;
     }
 
     public void delete(User entity) {
-        getSession().openSession().delete(entity);
-        getSession().close();
+        Session session = getSession().openSession();
+        session.delete(entity);
+        session.close();
     }
 
     @SuppressWarnings("unchecked")
     public List<User> findAll() {
         String query = "select usr from User usr";
-        List<User> books = (List<User>) getSession().openSession().get(query, User.class);
-        getSession().close();
+        Session session = getSession().openSession();
+        List<User> books = (List<User>) session.createQuery(query).list();
+        session.close();
         return books;
     }
 
@@ -60,16 +67,18 @@ public class UserDao implements DaoInterface<User, Long> {
     }
 
     public User findByEmail(String email) {
-        String query = "select usr from User usr where email = ?";
-        Object[] queryParam = {email};
-        List<User> users = (List<User>) hibernateTemplate.find(query, queryParam);
+        String query = "select usr from User usr where email = :email";
+        Session session = getSession().openSession();
+        List<User> users = (List<User>) session.createQuery(query).setParameter("email", email).list();
+        session.close();
         return !users.isEmpty() ? users.get(0) : null;
     }
 
     public List<User> findAllByEmail(List<String> emails) {
-        String query = "select usr from User usr where email in ?";
-        Object[] queryParam = {emails};
-        List<User> users = (List<User>) hibernateTemplate.find(query, queryParam);
+        String query = "select usr from User usr where email in :emails";
+        Session session = getSession().openSession();
+        List<User> users = (List<User>) session.createQuery(query).setParameter("emails", emails).list();
+        session.close();
         return users;
     }
 }

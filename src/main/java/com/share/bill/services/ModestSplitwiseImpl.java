@@ -10,8 +10,8 @@ import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +31,7 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
     @Autowired
     private GroupDao groupDao;
 
+    @Transactional
     @Override
     public void addBill(BillRequestDto billRequestDto) {
 
@@ -136,6 +137,7 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
         return share;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void getGroupWiseUserBalance(User usr) {
         for(Map.Entry<Group, Double> userGrpToBalance : usr.getGroupWiseAmount().entrySet()) {

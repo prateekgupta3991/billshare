@@ -13,6 +13,7 @@ import com.share.bill.exceptions.GroupNotFoundException;
 import com.share.bill.exceptions.GroupWithoutAdminException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class BillShareServiceImpl implements BillShareService{
     @Autowired
     private GroupDao groupDao;
 
+    @Transactional
     @Override
     public User addNewUser(UserRequestDto userRequestDto) {
 
@@ -43,18 +45,21 @@ public class BillShareServiceImpl implements BillShareService{
         return user;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         List<User> users = userDao.findAll();
         return users;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User getUser(Long userId) {
         User user = userDao.findById(userId);
         return user;
     }
 
+    @Transactional
     @Override
     public Group addNewGroup(GroupRequestDto groupRequestDto) throws CustomerNotFoundException {
         if(groupRequestDto.getUserEmails() == null || groupRequestDto.getUserEmails().isEmpty()) {
@@ -65,6 +70,7 @@ public class BillShareServiceImpl implements BillShareService{
         return group;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Group> getAllGroups() throws CustomerNotFoundException {
         return groupDao.findAll();
@@ -78,6 +84,7 @@ public class BillShareServiceImpl implements BillShareService{
         }
     }
 
+    @Transactional
     @Override
     public void addUserToGroup(GroupRequestDto groupRequestDto) throws GroupNotFoundException, CustomerNotFoundException {
 

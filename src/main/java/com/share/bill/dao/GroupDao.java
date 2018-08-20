@@ -1,8 +1,8 @@
 package com.share.bill.dao;
 
 import com.share.bill.entities.Group;
-import org.hibernate.FlushMode;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,31 +15,47 @@ public class GroupDao implements DaoInterface<Group, Long> {
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
-    public Session getSession() {
-        return hibernateTemplate.getSessionFactory().openSession();
+    public SessionFactory getSession() {
+        return hibernateTemplate.getSessionFactory();
     }
 
     public void persist(Group entity) {
-        getSession().save(entity);
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        session.save(entity);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public void update(Group entity) {
-        getSession().update(entity);
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(entity);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public Group findById(Long id) {
-        Group book = (Group) getSession().get(Group.class, id);
-        return book;
+        Session session = getSession().openSession();
+        Group group = (Group) session.get(Group.class, id);
+        session.close();
+        return group;
     }
 
     public void delete(Group entity) {
-        getSession().delete(entity);
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        session.delete(entity);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @SuppressWarnings("unchecked")
     public List<Group> findAll() {
-        List<Group> books = hibernateTemplate.loadAll(Group.class);
-        return books;
+        String query = "select grp from Group grp";
+        Session session = getSession().openSession();
+        List<Group> groups = (List<Group>) session.createQuery(query).list();
+        return groups;
     }
 
     public void deleteAll() {
