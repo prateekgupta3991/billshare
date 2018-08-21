@@ -77,7 +77,7 @@ public class UserDao implements DaoInterface<User, Long> {
     public List<User> findAllByEmail(List<String> emails) {
         String query = "select usr from User usr where email in :emails";
         Session session = getSession().openSession();
-        List<User> users = (List<User>) session.createQuery(query).setParameter("emails", emails).list();
+        List<User> users = (List<User>) session.createQuery(query).setParameterList("emails", emails).list();
         session.close();
         return users;
     }

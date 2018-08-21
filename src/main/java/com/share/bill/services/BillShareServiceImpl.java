@@ -65,7 +65,9 @@ public class BillShareServiceImpl implements BillShareService{
         if(groupRequestDto.getUserEmails() == null || groupRequestDto.getUserEmails().isEmpty()) {
             throw new GroupWithoutAdminException("User list is empty. Group without admin not possible!!!");
         }
-        Group group = new Group(groupRequestDto.getName());
+        List<User> members = userDao.findAllByEmail(groupRequestDto.getUserEmails());
+        User admin = members.get(0);
+        Group group = new Group(groupRequestDto.getName(), members, admin);
         groupDao.persist(group);
         return group;
     }

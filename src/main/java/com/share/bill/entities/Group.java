@@ -25,15 +25,15 @@ public class Group {
     @OneToMany(mappedBy = "id")
     private List<Bill> bills;
 
-    @OneToMany(mappedBy = "id")
-    private List<User> admins;
+    @OneToOne
+    private User admin_user;
 
-    public Group(String nam) {
+    public Group(String nam, List<User> userList, User admin_user) {
         super();
         this.name = nam;
-        this.users = new ArrayList<>();
+        this.users = userList;
         this.bills = new ArrayList<>();
-        this.admins = new ArrayList<>();
+        this.admin_user = admin_user;
     }
 
     public Long getId() {
@@ -68,22 +68,22 @@ public class Group {
         this.name = name;
     }
 
-    public List<User> getAdmins() {
-        return admins;
+    public User getAdmin_user() {
+        return admin_user;
     }
 
-    public void setAdmins(List<User> admins) {
-        this.admins = admins;
+    public void setAdmin_user(User admin_user) {
+        this.admin_user = admin_user;
     }
 
     @Override
     public String toString() {
         return "Group{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", users=" + users +
-            ", bills=" + bills +
-            ", admins=" + admins +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                ", bills=" + bills +
+                ", admin_user=" + admin_user +
+                '}';
     }
 }
