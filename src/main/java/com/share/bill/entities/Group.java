@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by prateekgupta on 09/09/17.
  */
-@Table(name = "group")
+@Table(name = "user_groups")
 @Entity
 public class Group {
 
