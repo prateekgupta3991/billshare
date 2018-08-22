@@ -1,7 +1,6 @@
 package com.share.bill.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,21 +18,23 @@ public class Group {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "id")
-    private List<User> users;
+    @OneToMany(mappedBy = "gang")
+    private List<UserGroup> userGroups;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "gang")
     private List<Bill> bills;
 
-    @OneToMany(mappedBy = "id")
-    private List<User> admins;
+    @OneToOne
+    @JoinColumn(name = "admin_user_id", referencedColumnName = "id")
+    private User adminUser;
 
-    public Group(String nam) {
+    public Group() {
+    }
+
+    public Group(String nam, User adminUser) {
         super();
         this.name = nam;
-        this.users = new ArrayList<>();
-        this.bills = new ArrayList<>();
-        this.admins = new ArrayList<>();
+        this.adminUser = adminUser;
     }
 
     public Long getId() {
@@ -44,12 +45,20 @@ public class Group {
         this.id = id;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public String getName() {
+        return name;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<UserGroup> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(List<UserGroup> userGroups) {
+        this.userGroups = userGroups;
     }
 
     public List<Bill> getBills() {
@@ -60,30 +69,22 @@ public class Group {
         this.bills = bills;
     }
 
-    public String getName() {
-        return name;
+    public User getAdminUser() {
+        return adminUser;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<User> getAdmins() {
-        return admins;
-    }
-
-    public void setAdmins(List<User> admins) {
-        this.admins = admins;
+    public void setAdminUser(User adminUser) {
+        this.adminUser = adminUser;
     }
 
     @Override
     public String toString() {
         return "Group{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", users=" + users +
-            ", bills=" + bills +
-            ", admins=" + admins +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userGroups=" + userGroups +
+                ", bills=" + bills +
+                ", adminUser=" + adminUser +
+                '}';
     }
 }

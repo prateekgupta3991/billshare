@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,11 +35,11 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
     public void addBill(BillRequestDto billRequestDto) {
 
         validations(billRequestDto);
-        Bill bill = new Bill(billRequestDto.getBillName(), billRequestDto.getAmount(), billRequestDto.getGrpId(),
-                billRequestDto.getUserContriPaid(), billRequestDto.getUserContriOwe());
-        billDao.persist(bill);
+//        Bill bill = new Bill(billRequestDto.getBillName(), billRequestDto.getAmount(), billRequestDto.getGrpId(),
+//                billRequestDto.getUserContriPaid(), billRequestDto.getUserContriOwe());
+//        billDao.persist(bill);
         if (billRequestDto.getGrpId() != null) {
-            updateUsersBalanceInGroup(billRequestDto.getGrpId(), bill);
+            //updateUsersBalanceInGroup(billRequestDto.getGrpId(), bill);
         }
     }
 
@@ -50,12 +49,12 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
         for(Map.Entry<User, Contribution> contributionEntry : billRequestDto.getUserContriPaid().entrySet()) {
             int cnt = 0;
             Group processGroup = groupDao.findById(billRequestDto.getGrpId());
-            for(User usr : processGroup.getUsers()) {
-                if(usr.equals(contributionEntry.getKey())) {
-                    cnt++;
-                    continue;
-                }
-            }
+//            for(User usr : processGroup.getUsers()) {
+//                if(usr.equals(contributionEntry.getKey())) {
+//                    cnt++;
+//                    continue;
+//                }
+//            }
             if(cnt == 0) {
                 System.out.println("User " + contributionEntry.getKey().getName() + " does not exists in this group");
                 System.exit(0);
@@ -88,33 +87,33 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
         }
     }
 
-    private void updateUsersBalanceInGroup(Long grpId, Bill bill) {
-
-        Group grp = groupDao.findById(grpId);
-        List<User> grpUsers = grp.getUsers();
-        for(User userItr : grpUsers) {
-            Contribution currentUserContriPaid = bill.getUserContributions().get(userItr);
-            Contribution currentUserContriOwe = bill.getUserOwed().get(userItr);
-
-            Double sharePaid = getUserPaidAmount(currentUserContriPaid, bill.getBillAmount());
-            Double shareOwe = getUserOweAmount(currentUserContriOwe, bill.getBillAmount());
-
-            Double netAmt = sharePaid - shareOwe;
-            Double grpUserAmt = userItr.getGroupWiseAmount().get(grp);
-            Double newGrpUserAmt = null;
-            if(grpUserAmt != null)
-                newGrpUserAmt = netAmt + grpUserAmt;
-            else
-                newGrpUserAmt = netAmt;
-            userItr.getGroupWiseAmount().put(grp, newGrpUserAmt);
-
-            Double userTotalAmt = userItr.getTotalAmount();
-            if(userTotalAmt != null)
-                userItr.setTotalAmount(userTotalAmt + newGrpUserAmt);
-            else
-                userItr.setTotalAmount(newGrpUserAmt);
-        }
-    }
+//    private void updateUsersBalanceInGroup(Long grpId, Bill bill) {
+//
+//        Group grp = groupDao.findById(grpId);
+//        List<User> grpUsers = grp.getUsers();
+//        for(User userItr : grpUsers) {
+//            Contribution currentUserContriPaid = bill.getUserContributions().get(userItr);
+//            Contribution currentUserContriOwe = bill.getUserOwed().get(userItr);
+//
+//            Double sharePaid = getUserPaidAmount(currentUserContriPaid, bill.getBillAmount());
+//            Double shareOwe = getUserOweAmount(currentUserContriOwe, bill.getBillAmount());
+//
+//            Double netAmt = sharePaid - shareOwe;
+//            Double grpUserAmt = userItr.getGroupWiseAmount().get(grp);
+//            Double newGrpUserAmt = null;
+//            if(grpUserAmt != null)
+//                newGrpUserAmt = netAmt + grpUserAmt;
+//            else
+//                newGrpUserAmt = netAmt;
+//            userItr.getGroupWiseAmount().put(grp, newGrpUserAmt);
+//
+//            Double userTotalAmt = userItr.getTotalAmount();
+//            if(userTotalAmt != null)
+//                userItr.setTotalAmount(userTotalAmt + newGrpUserAmt);
+//            else
+//                userItr.setTotalAmount(newGrpUserAmt);
+//        }
+//    }
 
     private Double getUserOweAmount(Contribution currentUserContriOwe, Double billAmt) {
         Double share = calculateShare(currentUserContriOwe, billAmt);
@@ -135,18 +134,5 @@ public class ModestSplitwiseImpl implements ModestSplitwise {
             share = contri.getSharePercentage() * billAmount / 100.0;
         }
         return share;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public void getGroupWiseUserBalance(User usr) {
-        for(Map.Entry<Group, Double> userGrpToBalance : usr.getGroupWiseAmount().entrySet()) {
-            System.out.println("Group : " + userGrpToBalance.getKey().getName() + " Balance : " + userGrpToBalance.getValue());
-        }
-    }
-
-    @Override
-    public void getTotalUserBalance(User usr) {
-        System.out.println(usr.getTotalAmount());
     }
 }

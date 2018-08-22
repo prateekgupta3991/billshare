@@ -1,6 +1,7 @@
 package com.share.bill.services;
 
 import com.share.bill.dto.GroupRequestDto;
+import com.share.bill.dto.GroupResponseDto;
 import com.share.bill.dto.UserRequestDto;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
@@ -22,7 +23,7 @@ public interface BillShareService {
 
     Group addNewGroup(GroupRequestDto groupRequestDto);
 
-    List<Group> getAllGroups();
+    List<GroupResponseDto> getAllGroups();
 
     void addUserToGroup(GroupRequestDto groupRequestDto);
 }

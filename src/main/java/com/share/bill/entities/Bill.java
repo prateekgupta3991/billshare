@@ -21,8 +21,9 @@ public class Bill {
     @Column(name = "amount")
     private Double billAmount;
 
-    @Column(name = "group_id")
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "gang_id")
+    private Group gang;
 
     @Transient
     private Map<User, Contribution> userContributions;
@@ -34,10 +35,10 @@ public class Bill {
     public Bill() {
     }
 
-    public Bill(String name, Double billAmount, Long groupId, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
+    public Bill(String name, Double billAmount, Group gang, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
         this.name = name;
         this.billAmount = billAmount;
-        this.groupId = groupId;
+        this.gang = gang;
         this.userContributions = userContributions;
         this.userOwed = userOwed;
     }
@@ -56,14 +57,6 @@ public class Bill {
 
     public void setBillAmount(Double billAmount) {
         this.billAmount = billAmount;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
     }
 
     public Map<User, Contribution> getUserContributions() {
@@ -90,13 +83,21 @@ public class Bill {
         this.name = name;
     }
 
+    public Group getGang() {
+        return gang;
+    }
+
+    public void setGang(Group gang) {
+        this.gang = gang;
+    }
+
     @Override
     public String toString() {
         return "Bill{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", billAmount=" + billAmount +
-                ", groupId=" + groupId +
+                ", gang=" + gang +
                 ", userContributions=" + userContributions +
                 ", userOwed=" + userOwed +
                 '}';

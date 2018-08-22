@@ -17,7 +17,7 @@ public interface ModestSplitwise {
 
     void addBill(BillRequestDto billRequestDto);
 
-    void getGroupWiseUserBalance(User usr);
-
-    void getTotalUserBalance(User usr);
+//    void getGroupWiseUserBalance(User usr);
+//
+//    void getTotalUserBalance(User usr);
 }
