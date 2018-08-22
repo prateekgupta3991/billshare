@@ -16,11 +16,24 @@ public class UserGroup {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "gang_id")
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gang_id", referencedColumnName = "id")
+    private Group gang;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    public UserGroup() {
+    }
+
+    public UserGroup(Group gang) {
+        this.gang = gang;
+    }
+
+    public UserGroup(User user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -30,28 +43,28 @@ public class UserGroup {
         this.id = id;
     }
 
-    public Long getGroupId() {
-        return groupId;
+    public Group getGang() {
+        return gang;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGang(Group gang) {
+        this.gang = gang;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public String toString() {
         return "UserGroup{" +
                 "id=" + id +
-                ", groupId=" + groupId +
-                ", userId=" + userId +
+                ", gang=" + gang +
+                ", user=" + user +
                 '}';
     }
 }

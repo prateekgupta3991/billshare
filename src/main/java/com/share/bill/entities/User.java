@@ -27,15 +27,8 @@ public class User {
     @Column(name = "contact")
     private String contact;
 
-    @Transient
-    private Double totalAmount;
-
-    //@ManyToOne(fetch = FetchType.LAZY, targetEntity = Group.class)
-    @Transient
-    private List<Group> groupsInvolved;
-
-    @Transient
-    private Map<Group, Double> groupWiseAmount;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserGroup> userGroup;
 
     public User() {
     }
@@ -45,18 +38,6 @@ public class User {
         this.name = nam;
         this.email = email;
         this.contact = contact;
-        this.groupsInvolved = new ArrayList<>();
-        this.groupWiseAmount = new HashMap<>();
-    }
-
-    public User(String name, String email, String contact, Double totalAmount, List<Group> groupsInvolved, Map<Group, Double>
-        groupWiseAmount) {
-        this.name = name;
-        this.email = email;
-        this.contact = contact;
-        this.totalAmount = totalAmount;
-        this.groupsInvolved = groupsInvolved;
-        this.groupWiseAmount = groupWiseAmount;
     }
 
     public Long getId() {
@@ -65,38 +46,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public Double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public List<Group> getGroupsInvolved() {
-        return groupsInvolved;
-    }
-
-    public void setGroupsInvolved(List<Group> groupsInvolved) {
-        this.groupsInvolved = groupsInvolved;
-    }
-
-    public Map<Group, Double> getGroupWiseAmount() {
-        return groupWiseAmount;
-    }
-
-    public void setGroupWiseAmount(Map<Group, Double> groupWiseAmount) {
-        this.groupWiseAmount = groupWiseAmount;
     }
 
     public String getName() {
@@ -115,6 +64,22 @@ public class User {
         this.email = email;
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public List<UserGroup> getUserGroup() {
+        return userGroup;
+    }
+
+    public void setUserGroup(List<UserGroup> userGroup) {
+        this.userGroup = userGroup;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -122,9 +87,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", contact='" + contact + '\'' +
-                ", totalAmount=" + totalAmount +
-                ", groupsInvolved=" + groupsInvolved +
-                ", groupWiseAmount=" + groupWiseAmount +
+                ", userGroup=" + userGroup +
                 '}';
     }
 }

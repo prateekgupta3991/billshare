@@ -1,6 +1,7 @@
 package com.share.bill.controllers;
 
 import com.share.bill.dto.GroupRequestDto;
+import com.share.bill.dto.GroupResponseDto;
 import com.share.bill.dto.UserRequestDto;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
@@ -64,9 +65,9 @@ public class BillSharePrimaryController extends AbstractController {
 	}
 
 	@RequestMapping(value="/group", method=RequestMethod.GET)
-	public ResponseEntity<List<Group>> getGroups() {
+	public ResponseEntity<List<GroupResponseDto>> getGroups() {
 
-		List<Group> groupList = billShareServiceImpl.getAllGroups();
+        List<GroupResponseDto> groupList = billShareServiceImpl.getAllGroups();
 		return new ResponseEntity<>(groupList, HttpStatus.OK);
 	}
 
