@@ -55,16 +55,22 @@ public class BillShareServiceImpl implements BillShareService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<User> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         List<User> users = userDao.findAll();
-        return users;
+        List<UserResponseDto> dtoList = new ArrayList<>();
+        for (User usr : users) {
+            UserResponseDto dto = new UserResponseDto(usr.getName(), usr.getEmail(), usr.getContact());
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User getUser(Long userId) {
+    public UserResponseDto getUser(Long userId) {
         User user = userDao.findById(userId);
-        return user;
+        UserResponseDto userResponseDto = new UserResponseDto(user.getName(), user.getEmail(), user.getContact());
+        return userResponseDto;
     }
 
     @Transactional

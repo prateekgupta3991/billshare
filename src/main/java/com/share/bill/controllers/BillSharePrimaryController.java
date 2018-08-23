@@ -3,6 +3,7 @@ package com.share.bill.controllers;
 import com.share.bill.dto.GroupRequestDto;
 import com.share.bill.dto.GroupResponseDto;
 import com.share.bill.dto.UserRequestDto;
+import com.share.bill.dto.UserResponseDto;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
 import com.share.bill.services.BillShareService;
@@ -44,16 +45,16 @@ public class BillSharePrimaryController extends AbstractController {
 	}
 
 	@RequestMapping(value="/user", method=RequestMethod.GET)
-	public ResponseEntity<List<User>> getUser() {
+	public ResponseEntity<List<UserResponseDto>> getUser() {
 
-		List<User> userList = billShareServiceImpl.getAllUsers();
+		List<UserResponseDto> userList = billShareServiceImpl.getAllUsers();
 		return new ResponseEntity<>(userList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/user/{userid}", method=RequestMethod.GET)
-	public ResponseEntity<User> getUserById(@PathVariable(value = "userid") Long userId) {
+	public ResponseEntity<UserResponseDto> getUserById(@PathVariable(value = "userid") Long userId) {
 
-		User user = billShareServiceImpl.getUser(userId);
+        UserResponseDto user = billShareServiceImpl.getUser(userId);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
