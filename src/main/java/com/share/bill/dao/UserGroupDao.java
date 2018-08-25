@@ -64,4 +64,14 @@ public class UserGroupDao implements DaoInterface<UserGroup, Long> {
             delete(entity);
         }
     }
+
+    public void persistAll(List<UserGroup> entityList) {
+        Session session = getSession().openSession();
+        session.beginTransaction();
+        for (UserGroup userGroup : entityList) {
+            session.save(userGroup);
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
 }

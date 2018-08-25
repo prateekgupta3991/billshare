@@ -119,28 +119,25 @@ public class BillShareServiceImpl implements BillShareService{
         return dtos;
     }
 
-    private void verifyUserList(List<String> emails) {
-
-        List<User> userList = userDao.findAllByEmail(emails);
-        if (userList.size() == emails.size()) {
-            throw new CustomerNotFoundException("Some customers does not exists");
-        }
-    }
-
     @Transactional
     @Override
     public void addUserToGroup(GroupRequestDto groupRequestDto) throws GroupNotFoundException, CustomerNotFoundException {
 
-        verifyGroupExists(groupRequestDto.getId());
-        verifyUserList(groupRequestDto.getUserEmails());
-        // add users to database
-    }
-
-    private void verifyGroupExists(Long id) {
-
-        Group grp = groupDao.findById(id);
+        Group grp = groupDao.findById(groupRequestDto.getId());
         if(grp == null) {
-            throw new GroupNotFoundException("Group with id " + id + " does not exists");
+            throw new GroupNotFoundException("Group with id " + groupRequestDto.getId() + " does not exists");
         }
+        List<User> userList = userDao.findAllByEmail(groupRequestDto.getUserEmails());
+        if (userList.size() != groupRequestDto.getUserEmails().size()) {
+            throw new CustomerNotFoundException("Some customers does not exists");
+        }
+
+        // add users to database
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (User usr : userList) {
+            UserGroup userGroup = new UserGroup(grp, usr);
+            userGroupList.add(userGroup);
+        }
+        userGroupDao.persistAll(userGroupList);
     }
 }

@@ -27,6 +27,11 @@ public class UserGroup {
     public UserGroup() {
     }
 
+    public UserGroup(Group gang, User user) {
+        this.gang = gang;
+        this.user = user;
+    }
+
     public UserGroup(Group gang) {
         this.gang = gang;
     }
