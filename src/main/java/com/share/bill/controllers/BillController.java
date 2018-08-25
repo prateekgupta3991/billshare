@@ -3,12 +3,12 @@ package com.share.bill.controllers;
 import com.share.bill.dto.UserRequestDto;
 import com.share.bill.dto.UserResponseDto;
 import com.share.bill.entities.User;
-import com.share.bill.services.UserService;
+import com.share.bill.services.BillService;
+import com.share.bill.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
-@RequestMapping(value="/v1/user")
-public class UserController extends AbstractController {
+@RequestMapping(value="/v1/bill")
+public class BillController extends AbstractController {
 
 	@Autowired
-    private UserService userServiceImpl;
+    private BillService billServiceImpl;
 
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
@@ -34,23 +34,16 @@ public class UserController extends AbstractController {
 	}
 
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public ResponseEntity<User> createNewUser(@RequestBody UserRequestDto json ) {
+	public ResponseEntity<User> createNewBill(@RequestBody UserRequestDto json ) {
 
-		User usr = userServiceImpl.addNewUser(json);
-		return new ResponseEntity<>(usr, HttpStatus.OK);
+		//billServiceImpl.addBill();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value="", method=RequestMethod.GET)
-	public ResponseEntity<List<UserResponseDto>> getUser() {
-
-		List<UserResponseDto> userList = userServiceImpl.getAllUsers();
-		return new ResponseEntity<>(userList, HttpStatus.OK);
-	}
-
-	@RequestMapping(value="/{userid}", method=RequestMethod.GET)
-	public ResponseEntity<UserResponseDto> getUserById(@PathVariable(value = "userid") Long userId) {
-
-        UserResponseDto user = userServiceImpl.getUser(userId);
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
+//	@RequestMapping(value="{billId}", method=RequestMethod.GET)
+//	public ResponseEntity<List<UserResponseDto>> getBill() {
+//
+//		List<UserResponseDto> userList = billShareServiceImpl.getAllUsers();
+//		return new ResponseEntity<>(userList, HttpStatus.OK);
+//	}
 }

@@ -12,8 +12,7 @@ import java.util.Map;
  * Created by prateekgupta on 09/09/17.
  */
 
-@Component
-public interface ModestSplitwise {
+public interface BillService {
 
     void addBill(BillRequestDto billRequestDto);
 

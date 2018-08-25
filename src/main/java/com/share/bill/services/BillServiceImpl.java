@@ -4,12 +4,11 @@ import com.share.bill.dao.BillDao;
 import com.share.bill.dao.GroupDao;
 import com.share.bill.dao.UserDao;
 import com.share.bill.dto.BillRequestDto;
-import com.share.bill.entities.Bill;
 import com.share.bill.entities.Contribution;
 import com.share.bill.entities.Group;
 import com.share.bill.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
@@ -18,8 +17,8 @@ import java.util.Map;
  * Created by prateekgupta on 09/09/17.
  */
 
-@Component
-public class ModestSplitwiseImpl implements ModestSplitwise {
+@Service
+public class BillServiceImpl implements BillService {
 
     @Autowired
     private UserDao userDao;
