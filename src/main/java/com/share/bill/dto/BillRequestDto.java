@@ -1,11 +1,12 @@
 package com.share.bill.dto;
 
 import com.share.bill.entities.Contribution;
-import com.share.bill.entities.User;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BillRequestDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -16,9 +17,20 @@ public class BillRequestDto implements Serializable{
 
 	private Long grpId;
 
-	private Map<User, Contribution> userContriPaid;
+	private Map<String, Contribution> userContriPaid;
 
-	private Map<User, Contribution> userContriOwe;
+	private Map<String, Contribution> userContriOwe;
+
+	public BillRequestDto() {
+	}
+
+	public BillRequestDto(String billName, Double amount, Long grpId, Map<String, Contribution> userContriPaid, Map<String, Contribution> userContriOwe) {
+		this.billName = billName;
+		this.amount = amount;
+		this.grpId = grpId;
+		this.userContriPaid = userContriPaid;
+		this.userContriOwe = userContriOwe;
+	}
 
 	public String getBillName() {
 		return billName;
@@ -44,19 +56,19 @@ public class BillRequestDto implements Serializable{
 		this.grpId = grpId;
 	}
 
-	public Map<User, Contribution> getUserContriPaid() {
+	public Map<String, Contribution> getUserContriPaid() {
 		return userContriPaid;
 	}
 
-	public void setUserContriPaid(Map<User, Contribution> userContriPaid) {
+	public void setUserContriPaid(Map<String, Contribution> userContriPaid) {
 		this.userContriPaid = userContriPaid;
 	}
 
-	public Map<User, Contribution> getUserContriOwe() {
+	public Map<String, Contribution> getUserContriOwe() {
 		return userContriOwe;
 	}
 
-	public void setUserContriOwe(Map<User, Contribution> userContriOwe) {
+	public void setUserContriOwe(Map<String, Contribution> userContriOwe) {
 		this.userContriOwe = userContriOwe;
 	}
 

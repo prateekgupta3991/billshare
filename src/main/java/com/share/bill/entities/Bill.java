@@ -25,22 +25,13 @@ public class Bill {
     @JoinColumn(name = "gang_id")
     private Group gang;
 
-    @Transient
-    private Map<User, Contribution> userContributions;
-
-    @Transient
-    private Map<User, Contribution> userOwed;
-
-
     public Bill() {
     }
 
-    public Bill(String name, Double billAmount, Group gang, Map<User, Contribution> userContributions, Map<User, Contribution> userOwed) {
+    public Bill(String name, Double billAmount, Group gang) {
         this.name = name;
         this.billAmount = billAmount;
         this.gang = gang;
-        this.userContributions = userContributions;
-        this.userOwed = userOwed;
     }
 
     public Long getId() {
@@ -57,22 +48,6 @@ public class Bill {
 
     public void setBillAmount(Double billAmount) {
         this.billAmount = billAmount;
-    }
-
-    public Map<User, Contribution> getUserContributions() {
-        return userContributions;
-    }
-
-    public void setUserContributions(Map<User, Contribution> userContributions) {
-        this.userContributions = userContributions;
-    }
-
-    public Map<User, Contribution> getUserOwed() {
-        return userOwed;
-    }
-
-    public void setUserOwed(Map<User, Contribution> userOwed) {
-        this.userOwed = userOwed;
     }
 
     public String getName() {
@@ -98,8 +73,6 @@ public class Bill {
                 ", name='" + name + '\'' +
                 ", billAmount=" + billAmount +
                 ", gang=" + gang +
-                ", userContributions=" + userContributions +
-                ", userOwed=" + userOwed +
                 '}';
     }
 }

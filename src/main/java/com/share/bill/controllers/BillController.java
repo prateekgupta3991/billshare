@@ -1,5 +1,6 @@
 package com.share.bill.controllers;
 
+import com.share.bill.dto.BillRequestDto;
 import com.share.bill.dto.UserRequestDto;
 import com.share.bill.dto.UserResponseDto;
 import com.share.bill.entities.User;
@@ -34,9 +35,9 @@ public class BillController extends AbstractController {
 	}
 
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public ResponseEntity<User> createNewBill(@RequestBody UserRequestDto json ) {
+	public ResponseEntity<?> createNewBill(@RequestBody BillRequestDto billRequestDto) {
 
-		//billServiceImpl.addBill();
+		billServiceImpl.addBill(billRequestDto);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

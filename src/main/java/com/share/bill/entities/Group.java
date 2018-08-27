@@ -18,10 +18,10 @@ public class Group {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "gang")
+    @OneToMany(mappedBy = "gang", fetch = FetchType.EAGER)
     private List<UserGroup> userGroups;
 
-    @OneToMany(mappedBy = "gang")
+    @OneToMany(mappedBy = "gang", fetch = FetchType.EAGER)
     private List<Bill> bills;
 
     @OneToOne

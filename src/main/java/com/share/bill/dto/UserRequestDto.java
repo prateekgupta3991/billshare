@@ -1,7 +1,10 @@
 package com.share.bill.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.io.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserRequestDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;

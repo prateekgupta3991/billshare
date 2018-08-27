@@ -1,8 +1,11 @@
 package com.share.bill.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.io.*;
 import java.util.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupRequestDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
