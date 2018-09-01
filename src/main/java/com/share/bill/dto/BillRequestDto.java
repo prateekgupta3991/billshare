@@ -24,6 +24,12 @@ public class BillRequestDto implements Serializable{
 	public BillRequestDto() {
 	}
 
+	public BillRequestDto(String billName, Double amount, Long grpId) {
+		this.billName = billName;
+		this.amount = amount;
+		this.grpId = grpId;
+	}
+
 	public BillRequestDto(String billName, Double amount, Long grpId, Map<Long, Contribution> userContriPaid, Map<Long, Contribution> userContriOwe) {
 		this.billName = billName;
 		this.amount = amount;

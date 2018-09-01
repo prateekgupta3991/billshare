@@ -18,7 +18,6 @@ public interface BillService {
 
     void addBillToGroup(BillRequestDto billRequestDto);
 
-//    void getGroupWiseUserBalance(User usr);
-//
-//    void getTotalUserBalance(User usr);
+    BillRequestDto getBillDetails(Long billId);
+
 }

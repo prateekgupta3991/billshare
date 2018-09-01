@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,10 +49,10 @@ public class BillController extends AbstractController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-//	@RequestMapping(value="{billId}", method=RequestMethod.GET)
-//	public ResponseEntity<List<UserResponseDto>> getBill() {
-//
-//		List<UserResponseDto> userList = billShareServiceImpl.getAllUsers();
-//		return new ResponseEntity<>(userList, HttpStatus.OK);
-//	}
+	@RequestMapping(value="/{billId}", method=RequestMethod.GET)
+	public ResponseEntity<BillRequestDto> getBill(@PathVariable(value = "billId") Long billId) {
+
+		BillRequestDto billResponse = billServiceImpl.getBillDetails(billId);
+		return new ResponseEntity<>(billResponse, HttpStatus.OK);
+	}
 }

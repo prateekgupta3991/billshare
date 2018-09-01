@@ -74,4 +74,11 @@ public class BillUserGroupDao implements DaoInterface<BillUserGroup, Long> {
         session.getTransaction().commit();
         session.close();
     }
+
+    public List<BillUserGroup> findBillUserGroupByBillId(Long billId) {
+        String query = "select bugrp from BillUserGroup bugrp where bill_id = :billId";
+        Session session = getSession().openSession();
+        List<BillUserGroup> groups = (List<BillUserGroup>) session.createQuery(query).setParameter("billId", billId).list();
+        return groups;
+    }
 }

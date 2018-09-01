@@ -153,52 +153,24 @@ public class BillServiceImpl implements BillService {
         return billUserGroups;
     }
 
-//    private void updateUsersBalanceInGroup(Long grpId, Bill bill) {
-//
-//        Group grp = groupDao.findById(grpId);
-//        List<User> grpUsers = grp.getUsers();
-//        for(User userItr : grpUsers) {
-//            Contribution currentUserContriPaid = bill.getUserContributions().get(userItr);
-//            Contribution currentUserContriOwe = bill.getUserOwed().get(userItr);
-//
-//            Double sharePaid = getUserPaidAmount(currentUserContriPaid, bill.getBillAmount());
-//            Double shareOwe = getUserOweAmount(currentUserContriOwe, bill.getBillAmount());
-//
-//            Double netAmt = sharePaid - shareOwe;
-//            Double grpUserAmt = userItr.getGroupWiseAmount().get(grp);
-//            Double newGrpUserAmt = null;
-//            if(grpUserAmt != null)
-//                newGrpUserAmt = netAmt + grpUserAmt;
-//            else
-//                newGrpUserAmt = netAmt;
-//            userItr.getGroupWiseAmount().put(grp, newGrpUserAmt);
-//
-//            Double userTotalAmt = userItr.getTotalAmount();
-//            if(userTotalAmt != null)
-//                userItr.setTotalAmount(userTotalAmt + newGrpUserAmt);
-//            else
-//                userItr.setTotalAmount(newGrpUserAmt);
-//        }
-//    }
+    public BillRequestDto getBillDetails(Long billId) {
 
-    private Double getUserOweAmount(Contribution currentUserContriOwe, Double billAmt) {
-        Double share = calculateShare(currentUserContriOwe, billAmt);
-        return share;
-    }
-
-    private Double getUserPaidAmount(Contribution currentUserContriPaid, Double billAmt) {
-        Double share = calculateShare(currentUserContriPaid, billAmt);
-        return share;
-    }
-
-    private Double calculateShare(Contribution contri, Double billAmount) {
-
-        Double share = null;
-        if(contri.getShareAmount() != null) {
-            share = contri.getShareAmount();
-        } else if(contri.getSharePercentage() != null) {
-            share = contri.getSharePercentage() * billAmount / 100.0;
+        Bill bill = billDao.findById(billId);
+        Long grpId = bill.getGang() != null ? bill.getGang().getId() : null;
+        BillRequestDto billRequestDto = new BillRequestDto(bill.getName(), bill.getBillAmount(), grpId);
+        List<BillUserGroup> billUserGroups = billUserGroupDao.findBillUserGroupByBillId(billId);
+        Map<Long, Contribution> owe = new HashMap<>();
+        Map<Long, Contribution> paid = new HashMap<>();
+        billRequestDto.setUserContriOwe(owe);
+        billRequestDto.setUserContriPaid(paid);
+        for (BillUserGroup billUserGroup : billUserGroups) {
+            Contribution contribution = new Contribution(billUserGroup.getShare(), null);
+            if (billUserGroup.getShare() > 0) {
+                paid.put(billUserGroup.getUser().getId(), contribution);
+            } else {
+                owe.put(billUserGroup.getUser().getId(), contribution);
+            }
         }
-        return share;
+        return billRequestDto;
     }
 }
