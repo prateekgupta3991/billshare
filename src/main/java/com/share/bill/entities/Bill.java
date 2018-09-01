@@ -34,6 +34,11 @@ public class Bill {
         this.gang = gang;
     }
 
+    public Bill(String name, Double billAmount) {
+        this.name = name;
+        this.billAmount = billAmount;
+    }
+
     public Long getId() {
         return id;
     }

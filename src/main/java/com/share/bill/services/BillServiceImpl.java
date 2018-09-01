@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by prateekgupta on 09/09/17.
@@ -37,7 +35,7 @@ public class BillServiceImpl implements BillService {
 
     @Transactional
     @Override
-    public void addBill(BillRequestDto billRequestDto) {
+    public void addBillToGroup(BillRequestDto billRequestDto) {
 
         Group grp = null;
         if (billRequestDto.getGrpId() != null) {
@@ -46,7 +44,7 @@ public class BillServiceImpl implements BillService {
                 throw new GroupNotFoundException("Group with id " + billRequestDto.getGrpId() + " does not exists");
             }
         }
-        List<BillUserGroup> billUserGroupList = validateAndCalculateShares(billRequestDto);
+        List<BillUserGroup> billUserGroupList = calculateShares(billRequestDto, grp);
         Bill bill = new Bill(billRequestDto.getBillName(), billRequestDto.getAmount(), grp);
         billDao.persist(bill);
         for (BillUserGroup billUserGroup : billUserGroupList) {
@@ -55,49 +53,102 @@ public class BillServiceImpl implements BillService {
         billUserGroupDao.persistAll(billUserGroupList);
     }
 
-    private List<BillUserGroup> validateAndCalculateShares(BillRequestDto billRequestDto) {
+    @Transactional
+    @Override
+    public void addBill(BillRequestDto billRequestDto) {
 
-        Double paidAmt = 0.0, owedAmt = 0.0, paidPer = 0.0, owedPer = 0.0;
-        Group processGroup = groupDao.findById(billRequestDto.getGrpId());
+        List<BillUserGroup> billUserGroupList = calculateShares(billRequestDto, null);
+        Bill bill = new Bill(billRequestDto.getBillName(), billRequestDto.getAmount());
+        billDao.persist(bill);
+        for (BillUserGroup billUserGroup : billUserGroupList) {
+            billUserGroup.setBill(bill);
+        }
+        billUserGroupDao.persistAll(billUserGroupList);
+    }
+
+    private List<BillUserGroup> calculateShares(BillRequestDto billRequestDto, Group grp) {
+
+        List<BillUserGroup> billUserGroups;
+        if (grp != null) {
+            billUserGroups = splitGroupUserShares(billRequestDto, grp);
+        } else {
+            billUserGroups = splitUserShares(billRequestDto);
+        }
+        return billUserGroups;
+    }
+
+    private List<BillUserGroup> splitGroupUserShares(BillRequestDto billRequestDto, Group grp) {
+
+        List<User> userList = getUsersInBill(billRequestDto);//prepareGroupUserList(grp); <Use this afterwards. Needs fixing>
+        List<BillUserGroup> billUserGroups = calculateUserShares(billRequestDto, userList);
+        return billUserGroups;
+    }
+
+    private List<User> prepareGroupUserList(Group grp) {
+
+        List<User> idList = new ArrayList<>();
+        for (UserGroup usrGrp : grp.getUserGroups()) {
+            idList.add(usrGrp.getUser());
+        }
+        return idList;
+    }
+
+    private List<BillUserGroup> splitUserShares(BillRequestDto billRequestDto) {
+
+        List<User> userList = getUsersInBill(billRequestDto);
+        List<BillUserGroup> billUserGroups = calculateUserShares(billRequestDto, userList);
+        return billUserGroups;
+    }
+
+    private List<User> getUsersInBill(BillRequestDto billRequestDto) {
+
+        Set<Long> oweIds = billRequestDto.getUserContriOwe().keySet();
+        Set<Long> paidIds = billRequestDto.getUserContriPaid().keySet();
+        Set<Long> ids = new HashSet<>();
+        ids.addAll(oweIds);
+        ids.addAll(paidIds);
+        List<Long> idList = new ArrayList<>();
+        idList.addAll(ids);
+        List<User> userList = userDao.findAllByIds(idList);
+        return userList;
+    }
+
+    private List<BillUserGroup> calculateUserShares(BillRequestDto billRequestDto, List<User> users) {
+
+        Double paidAmt = -1.0, owedAmt = -1.0, paidPer = 0.0, owedPer = 0.0;
         List<BillUserGroup> billUserGroups = new ArrayList<>();
-        for(Map.Entry<String, Contribution> contributionEntry : billRequestDto.getUserContriPaid().entrySet()) {
-            // check if all users exists as in data of user contri and user share
-//            for (UserGroup userGroup : processGroup.getUserGroups()) {
-//                if (!billRequestDto.getUserContriPaid().containsKey(userGroup.getUser().getEmail())) {
-//                    System.out.println("User " + contributionEntry.getKey() + " does not exists in this group");
-//                    System.exit(0);
-//                }
-//            }
-
+        for (User user : users) {
             // check if data is supplied for correct user share calculations
-            Map<String, Contribution> userContriOwe = billRequestDto.getUserContriOwe();
-            if(contributionEntry.getValue().getShareAmount() == null && contributionEntry.getValue().getSharePercentage() == null
-                    || userContriOwe.get(contributionEntry.getKey()).getShareAmount() == null
-                    && userContriOwe.get(contributionEntry.getKey()).getSharePercentage() == null) {
+            Map<Long, Contribution> userContriPaid = billRequestDto.getUserContriPaid();
+            Map<Long, Contribution> userContriOwe = billRequestDto.getUserContriOwe();
+            Contribution userPaidContribution = userContriPaid.get(user.getId());
+            Contribution userOwedContribution = userContriOwe.get(user.getId());
+            if((userPaidContribution != null && userPaidContribution.getShareAmount() == null && userPaidContribution.getSharePercentage() == null)
+                    || (userOwedContribution != null && userOwedContribution.getShareAmount() == null && userOwedContribution.getSharePercentage() == null)) {
                 System.out.println("No share data supplied");
                 System.exit(0);
             } else {
-                if (contributionEntry.getValue().getShareAmount() != null) {
-                    paidAmt = paidAmt + contributionEntry.getValue().getShareAmount();
-                } else {
-                    paidPer = paidPer + contributionEntry.getValue().getSharePercentage();
+                if (userPaidContribution != null) {
+                    if (userPaidContribution.getShareAmount() != null) {
+                        paidAmt = userPaidContribution.getShareAmount();
+                    } else {
+                        paidPer = userPaidContribution.getSharePercentage();
+                    }
                 }
-                if (userContriOwe.get(contributionEntry.getKey()).getShareAmount() != null) {
-                    owedAmt = owedAmt + userContriOwe.get(contributionEntry.getKey()).getShareAmount();
-                } else {
-                    owedPer = owedPer + userContriOwe.get(contributionEntry.getKey()).getSharePercentage();
+                if (userOwedContribution != null) {
+                    if (userOwedContribution.getShareAmount() != null) {
+                        owedAmt = userOwedContribution.getShareAmount();
+                    } else {
+                        owedPer = userOwedContribution.getSharePercentage();
+                    }
                 }
             }
-            User usr = userDao.findByEmail(contributionEntry.getKey());
-            BillUserGroup billUserGroup = new BillUserGroup(usr, paidAmt - owedAmt);
+            Double userPaid = paidAmt != -1.0 ? paidAmt : paidPer * 0.01 * billRequestDto.getAmount();
+            Double userOwe = owedAmt != -1.0 ? owedAmt : owedPer * 0.01 * billRequestDto.getAmount();
+            BillUserGroup billUserGroup = new BillUserGroup(user, userPaid - userOwe);
             billUserGroups.add(billUserGroup);
-        }
-        if(paidAmt.equals(billRequestDto.getAmount()) || paidPer.equals(new Double(100.0))
-                && owedAmt.equals(billRequestDto.getAmount()) || owedPer.equals(new Double(100.0))) {
-            return billUserGroups;
-        } else {
-            System.out.println("Incorrect paid or owed data supplied");
-            System.exit(0);
+            paidAmt = -1.0;
+            owedAmt = -1.0;
         }
         return billUserGroups;
     }

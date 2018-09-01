@@ -81,4 +81,12 @@ public class UserDao implements DaoInterface<User, Long> {
         session.close();
         return users;
     }
+
+    public List<User> findAllByIds(List<Long> ids) {
+        String query = "select usr from User usr where id in :ids";
+        Session session = getSession().openSession();
+        List<User> users = (List<User>) session.createQuery(query).setParameterList("ids", ids).list();
+        session.close();
+        return users;
+    }
 }

@@ -17,14 +17,14 @@ public class BillRequestDto implements Serializable{
 
 	private Long grpId;
 
-	private Map<String, Contribution> userContriPaid;
+	private Map<Long, Contribution> userContriPaid;
 
-	private Map<String, Contribution> userContriOwe;
+	private Map<Long, Contribution> userContriOwe;
 
 	public BillRequestDto() {
 	}
 
-	public BillRequestDto(String billName, Double amount, Long grpId, Map<String, Contribution> userContriPaid, Map<String, Contribution> userContriOwe) {
+	public BillRequestDto(String billName, Double amount, Long grpId, Map<Long, Contribution> userContriPaid, Map<Long, Contribution> userContriOwe) {
 		this.billName = billName;
 		this.amount = amount;
 		this.grpId = grpId;
@@ -56,19 +56,19 @@ public class BillRequestDto implements Serializable{
 		this.grpId = grpId;
 	}
 
-	public Map<String, Contribution> getUserContriPaid() {
+	public Map<Long, Contribution> getUserContriPaid() {
 		return userContriPaid;
 	}
 
-	public void setUserContriPaid(Map<String, Contribution> userContriPaid) {
+	public void setUserContriPaid(Map<Long, Contribution> userContriPaid) {
 		this.userContriPaid = userContriPaid;
 	}
 
-	public Map<String, Contribution> getUserContriOwe() {
+	public Map<Long, Contribution> getUserContriOwe() {
 		return userContriOwe;
 	}
 
-	public void setUserContriOwe(Map<String, Contribution> userContriOwe) {
+	public void setUserContriOwe(Map<Long, Contribution> userContriOwe) {
 		this.userContriOwe = userContriOwe;
 	}
 

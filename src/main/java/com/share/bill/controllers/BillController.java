@@ -34,8 +34,15 @@ public class BillController extends AbstractController {
 		return model;
 	}
 
+	@RequestMapping(value="/group", method=RequestMethod.POST)
+	public ResponseEntity<?> addNewBillToGroup(@RequestBody BillRequestDto billRequestDto) {
+
+		billServiceImpl.addBillToGroup(billRequestDto);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public ResponseEntity<?> createNewBill(@RequestBody BillRequestDto billRequestDto) {
+	public ResponseEntity<?> addNewBill(@RequestBody BillRequestDto billRequestDto) {
 
 		billServiceImpl.addBill(billRequestDto);
 		return new ResponseEntity<>(HttpStatus.OK);
