@@ -7,3 +7,4 @@ Resources:
             Alias: "staging"
             CurrentVersion: "2"
             TargetVersion: "3"
+            PlatformVersion: "linux"
